@@ -46,7 +46,7 @@ fn solve_part1() -> i32 {
 fn solve_part2() -> i32 {
     let content = parse();
     let mut result = 0;
-    let WORD_TO_NUMBER: HashMap<&str, u8> = HashMap::from([
+    let word_to_number: HashMap<&str, i32> = HashMap::from([
         ("one", 1),
         ("two", 2),
         ("three", 3),
@@ -61,6 +61,24 @@ fn solve_part2() -> i32 {
 
     for elem in content {
         let mut number_vec: Vec<i32> = Vec::new();
+        //voir comment faire pour que l'ordre soit respecté avec l'implémentation du elem.chars() etc...
+
+        for (key, value) in &word_to_number {
+            match elem.find(key) {
+                Some(_) => number_vec.push(*value),
+                _ => continue,
+            }
+        }
+
+        if number_vec.len() >= 2 {
+            let first_number = number_vec.first().expect("No first value");
+            let last_number = number_vec.last().expect("No last value");
+            result += *first_number * 10 + *last_number;
+        } else if number_vec.len() == 1 {
+            let first_number = number_vec.first().expect("No first value");
+            result += *first_number * 10 + *first_number;
+        }
+    }
 
     result
 }
