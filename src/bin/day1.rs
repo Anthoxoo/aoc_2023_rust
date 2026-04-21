@@ -1,4 +1,4 @@
-use std::fs;
+use std::{collections::HashMap, fs};
 
 fn parse() -> Vec<String> {
     let file_path = "input_day1.txt";
@@ -12,7 +12,7 @@ fn parse() -> Vec<String> {
     content_vec
 }
 
-fn solve() -> i32 {
+fn solve_part1() -> i32 {
     let content = parse();
     let mut result = 0;
 
@@ -43,7 +43,31 @@ fn solve() -> i32 {
     result
 }
 
+fn solve_part2() -> i32 {
+    let content = parse();
+    let mut result = 0;
+    let WORD_TO_NUMBER: HashMap<&str, u8> = HashMap::from([
+        ("one", 1),
+        ("two", 2),
+        ("three", 3),
+        ("four", 4),
+        ("five", 5),
+        ("six", 6),
+        ("seven", 7),
+        ("eight", 8),
+        ("nine", 9),
+        ("ten", 10),
+    ]);
+
+    for elem in content {
+        let mut number_vec: Vec<i32> = Vec::new();
+
+    result
+}
+
 fn main() {
-    let res = solve();
+    // let res = solve_part1();
+    let res = solve_part2();
+
     println!("{res}");
 }
