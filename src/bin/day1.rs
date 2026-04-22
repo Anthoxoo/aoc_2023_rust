@@ -43,10 +43,10 @@ fn solve_part1() -> i32 {
     result
 }
 
-fn solve_part2() -> i32 {
+fn solve_part2() -> u32 {
     let content = parse();
     let mut result = 0;
-    let word_to_number: HashMap<&str, i32> = HashMap::from([
+    let word_to_number: HashMap<&str, u32> = HashMap::from([
         ("one", 1),
         ("two", 2),
         ("three", 3),
@@ -60,22 +60,31 @@ fn solve_part2() -> i32 {
     ]);
 
     for elem in content {
-        let mut number_vec: Vec<i32> = Vec::new();
-        //voir comment faire pour que l'ordre soit respecté avec l'implémentation du elem.chars() etc...
+        let mut number_vec: Vec<u32> = Vec::new();
 
-        for (key, value) in &word_to_number {
-            match elem.find(key) {
-                Some(_) => number_vec.push(*value),
-                _ => continue,
+        for i in 0..elem.len() {
+            let rest_line = &elem[i..];
+            let first_carac = rest_line.chars().next().unwrap();
+
+            if let Some(digit) = first_carac.to_digit(10) {
+                number_vec.push(digit)
+            } else {
+                for (key, value) in &word_to_number {
+                    if rest_line.starts_with(key) {
+                        number_vec.push(*value)
+                    }
+                }
             }
         }
 
         if number_vec.len() >= 2 {
             let first_number = number_vec.first().expect("No first value");
             let last_number = number_vec.last().expect("No last value");
+
             result += *first_number * 10 + *last_number;
         } else if number_vec.len() == 1 {
             let first_number = number_vec.first().expect("No first value");
+
             result += *first_number * 10 + *first_number;
         }
     }
