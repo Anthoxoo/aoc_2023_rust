@@ -1,5 +1,6 @@
 // sample of input: Game 1: 9 red, 2 green, 13 blue; 10 blue, 2 green, 13 red; 8 blue, 3 red, 6 green; 5 green, 2 red, 1 blue
 
+use std::cmp;
 use std::fs;
 
 #[derive(Debug)]
@@ -82,8 +83,24 @@ fn solve_part1(input_parsed: Vec<Vec<Cube>>) -> i32 {
     res
 }
 
+fn solve_part2(input_parsed: Vec<Vec<Cube>>) -> i32 {
+    let mut res = 0;
+    for set in input_parsed {
+        let (mut max_red, mut max_blue, mut max_green) = (0, 0, 0);
+        for game in &set {
+            max_blue = cmp::max(game.blue, max_blue);
+            max_green = cmp::max(game.green, max_green);
+            max_red = cmp::max(game.red, max_red);
+        }
+        res += max_blue * max_green * max_red;
+    }
+    res
+}
+
 fn main() {
     let parsed_input = parse();
-    let res_d1 = solve_part1(parsed_input);
-    println!("answer d1 : {}", res_d1);
+    //let res_d1 = solve_part1(parsed_input);
+    //println!("answer d1 : {}", res_d1);
+    let res_d2 = solve_part2(parsed_input);
+    println!("answer d2 : {}", res_d2);
 }
