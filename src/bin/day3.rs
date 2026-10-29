@@ -38,24 +38,25 @@ fn solve_part1(parsed_input: Vec<Vec<char>>) -> i32 {
      * if the symbol is in this range, we check around it : (i-1,j-1), (i-1,j), (i-1,j+1), (i,j-1), (i,j+1), (i+1,j-1), (i+1,j), (i+1,j+1)
      *  and we have to find a way to take all the numbers that are sticked to each other to create the final number and then add it to the sum
      */
-    // dbg!(parsed_input);
     let mut res = 0;
 
     for i in 0..parsed_input.len() {
         for j in 0..parsed_input[i].len() {
-            // print!("{}", parsed_input[i][j]);
             let element = parsed_input[i][j];
+
             if element.is_ascii_punctuation() && element != '.' {
                 let mut previous_num: Option<i32> = None;
+
                 // at this point element is not a '.' and is a symbol we were looking for
                 for (di, dj) in DIRS {
                     if let (Some(ni), Some(nj)) =
                         (i.checked_add_signed(di), j.checked_add_signed(dj))
-                    // checks if the index is < 0 to avoid under limit accessing array
+                    // checks if the index is > 0 to avoid under limit accessing array
                     {
                         if let num = parsed_input[ni][nj] {
                             if num.is_ascii_digit() {
-                                // we have to get to the first number of the list cuz it could be a number that is part of a bigger one
+                                // we have to get to the first number and the last of the list cuz it could be a number that is part of a bigger one
+
                                 let mut min_j = nj;
                                 while min_j > 0 && parsed_input[ni][min_j - 1].is_ascii_digit() {
                                     min_j -= 1;
@@ -67,9 +68,15 @@ fn solve_part1(parsed_input: Vec<Vec<char>>) -> i32 {
                                 {
                                     max_j += 1;
                                 }
+
                                 let slice_num = &parsed_input[ni][min_j..=max_j];
                                 let val =
                                     slice_num.iter().collect::<String>().parse::<i32>().unwrap();
+                                /* this code is here to prevent that when we found a number, we can find the same number with another direction which is logical.
+                                 * i also found out that when a value is reapearing, it reapears just after the same one so i can just keep track of the last one and exclude it if it is the same.
+                                 * i could have done it better by keeping track of its position because we can have the same number close enough but still at different positions which would
+                                 * count as two different numbers but ayyy it works like this (which is pure luck given by the inputs)
+                                 */
                                 if previous_num != Some(val) {
                                     res += val;
                                     previous_num = Some(val);
@@ -80,7 +87,6 @@ fn solve_part1(parsed_input: Vec<Vec<char>>) -> i32 {
                 }
             }
         }
-        println!();
     }
     res
 }
