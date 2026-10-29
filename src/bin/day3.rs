@@ -91,8 +91,61 @@ fn solve_part1(parsed_input: Vec<Vec<char>>) -> i32 {
     res
 }
 
-fn solve_part2() {}
+fn solve_part2(parsed_input: Vec<Vec<char>>) -> i32 {
+    let mut res = 0;
+
+    for i in 0..parsed_input.len() {
+        for j in 0..parsed_input[i].len() {
+            let element = parsed_input[i][j];
+
+            if element == '*' {
+                let mut previous_num: Option<i32> = None;
+                let mut first_num: Option<i32> = None;
+                let mut second_num: Option<i32> = None;
+
+                for (di, dj) in DIRS {
+                    if let (Some(ni), Some(nj)) =
+                        (i.checked_add_signed(di), j.checked_add_signed(dj))
+                    {
+                        if let num = parsed_input[ni][nj] {
+                            if num.is_ascii_digit() {
+                                let mut min_j = nj;
+                                while min_j > 0 && parsed_input[ni][min_j - 1].is_ascii_digit() {
+                                    min_j -= 1;
+                                }
+
+                                let mut max_j = nj;
+                                while max_j + 1 < parsed_input[ni].len()
+                                    && parsed_input[ni][max_j + 1].is_ascii_digit()
+                                {
+                                    max_j += 1;
+                                }
+
+                                let slice_num = &parsed_input[ni][min_j..=max_j];
+                                let val =
+                                    slice_num.iter().collect::<String>().parse::<i32>().unwrap();
+                                if previous_num != Some(val) {
+                                    previous_num = Some(val);
+                                    if first_num.is_none() {
+                                        first_num = Some(val);
+                                    } else {
+                                        second_num = Some(val);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if first_num.is_some() && second_num.is_some() {
+                    res += first_num.unwrap() * second_num.unwrap();
+                }
+            }
+        }
+    }
+    res
+}
 
 fn main() {
     solve_part1(parse_input());
+    println!("{}", solve_part2(parse_input()));
 }
